@@ -283,13 +283,14 @@ const ChatbotBuilder = () => {
   ];
 
   return (
-    <AdminLayout>
-      <h1 className="text-2xl font-bold mb-6">Builder — {shopName}</h1>
-
-      <div className="flex flex-col gap-4 lg:flex-row">
-        <Card className="lg:w-72 shrink-0">
-          <CardHeader>
-            <CardTitle className="text-base">Builder tools</CardTitle>
+    <AdminLayout mainClassName="max-w-none w-full px-2 py-2 min-h-[calc(100vh-4rem)]">
+      <div className="flex h-[calc(100vh-4.5rem)] flex-col gap-2 lg:flex-row">
+        <Card className="lg:w-72 shrink-0 h-full">
+          <CardHeader className="py-4">
+            <CardTitle className="text-sm font-semibold flex items-center justify-between gap-2">
+              <span>Builder tools</span>
+              <span className="text-xs font-normal text-muted-foreground truncate">{shopName}</span>
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {tools.map((tool) => {
@@ -344,7 +345,7 @@ const ChatbotBuilder = () => {
         </Card>
 
         <div
-          className="flex-1 min-h-[680px] rounded-xl border border-dashed bg-white p-6"
+          className="flex-1 h-full rounded-xl border border-dashed bg-white p-4 lg:p-5"
           onDrop={onDrop}
           onDragOver={(e) => e.preventDefault()}
           style={{
@@ -352,13 +353,6 @@ const ChatbotBuilder = () => {
             backgroundSize: "18px 18px",
           }}
         >
-          {mode.type === "NONE" && (
-            <Card className="mx-auto mt-8 max-w-2xl bg-white/95 backdrop-blur-sm">
-              <CardContent className="flex items-center justify-center py-16 text-center text-muted-foreground">
-                <p>Drag a tool from the left and drop it here to start building.</p>
-              </CardContent>
-            </Card>
-          )}
 
           {mode.type === "CONTACT" && (
             <ContactForm
