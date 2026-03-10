@@ -42,6 +42,40 @@ interface SchemaField {
   options?: string[];
 }
 
+
+interface ToolColorStyle {
+  container: string;
+  iconWrap: string;
+}
+
+const TOOL_COLORS: Record<"CONTACT" | "SCHEDULE" | "CUSTOM_BLOCK" | "TAGS", ToolColorStyle> = {
+  CONTACT: {
+    container: "border-rose-200/80 bg-rose-50/60 hover:bg-rose-100/60",
+    iconWrap: "bg-rose-100 text-rose-700",
+  },
+  SCHEDULE: {
+    container: "border-sky-200/80 bg-sky-50/60 hover:bg-sky-100/60",
+    iconWrap: "bg-sky-100 text-sky-700",
+  },
+  CUSTOM_BLOCK: {
+    container: "border-violet-200/80 bg-violet-50/60 hover:bg-violet-100/60",
+    iconWrap: "bg-violet-100 text-violet-700",
+  },
+  TAGS: {
+    container: "border-amber-200/80 bg-amber-50/70 hover:bg-amber-100/70",
+    iconWrap: "bg-amber-100 text-amber-700",
+  },
+};
+
+const DYNAMIC_TOOL_COLORS: ToolColorStyle[] = [
+  { container: "border-fuchsia-200/80 bg-fuchsia-50/60 hover:bg-fuchsia-100/60", iconWrap: "bg-fuchsia-100 text-fuchsia-700" },
+  { container: "border-cyan-200/80 bg-cyan-50/60 hover:bg-cyan-100/60", iconWrap: "bg-cyan-100 text-cyan-700" },
+  { container: "border-emerald-200/80 bg-emerald-50/60 hover:bg-emerald-100/60", iconWrap: "bg-emerald-100 text-emerald-700" },
+  { container: "border-indigo-200/80 bg-indigo-50/60 hover:bg-indigo-100/60", iconWrap: "bg-indigo-100 text-indigo-700" },
+  { container: "border-orange-200/80 bg-orange-50/60 hover:bg-orange-100/60", iconWrap: "bg-orange-100 text-orange-700" },
+  { container: "border-teal-200/80 bg-teal-50/60 hover:bg-teal-100/60", iconWrap: "bg-teal-100 text-teal-700" },
+];
+
 const EMPTY_CONTACT: ContactFormData = {
   org_name: "",
   phone: "",
@@ -282,6 +316,30 @@ const ChatbotBuilder = () => {
     { type: "CUSTOM_BLOCK" as const, label: "Custom Block", icon: Puzzle },
   ];
 
+  const dynamicToolColorMap = useMemo(() => {
+    const usedIndexes = new Set<number>();
+    const assignments: Record<number, ToolColorStyle> = {};
+
+    const sortedTypes = [...blockTypes].sort((a, b) => a.type_id - b.type_id);
+
+    sortedTypes.forEach((type) => {
+      const preferred = Math.abs(type.type_id) % DYNAMIC_TOOL_COLORS.length;
+      let selected = preferred;
+
+      if (usedIndexes.has(selected)) {
+        const available = DYNAMIC_TOOL_COLORS.findIndex((_, index) => !usedIndexes.has(index));
+        if (available >= 0) {
+          selected = available;
+        }
+      }
+
+      usedIndexes.add(selected);
+      assignments[type.type_id] = DYNAMIC_TOOL_COLORS[selected];
+    });
+
+    return assignments;
+  }, [blockTypes]);
+
   return (
     <AdminLayout mainClassName="max-w-none w-full px-2 py-2 min-h-[calc(100vh-4rem)]">
       <div className="flex h-[calc(100vh-4.5rem)] flex-col gap-2 lg:flex-row">
@@ -295,15 +353,18 @@ const ChatbotBuilder = () => {
           <CardContent className="space-y-2">
             {tools.map((tool) => {
               const Icon = tool.icon;
+              const color = TOOL_COLORS[tool.type];
               return (
                 <button
                   key={tool.type}
                   draggable
                   onDragStart={(e) => e.dataTransfer.setData("builder-tool-type", tool.type)}
-                  className="w-full rounded-lg border bg-muted/40 p-3 text-left hover:bg-muted transition-colors cursor-grab"
+                  className={`w-full rounded-lg border p-3 text-left transition-colors cursor-grab ${color.container}`}
                 >
                   <div className="flex items-center gap-2 text-sm font-medium">
-                    <Icon className="h-4 w-4" />
+                    <span className={`inline-flex h-6 w-6 items-center justify-center rounded-md ${color.iconWrap}`}>
+                      <Icon className="h-4 w-4" />
+                    </span>
                     {tool.label}
                   </div>
                 </button>
@@ -314,19 +375,24 @@ const ChatbotBuilder = () => {
               <>
                 <Separator className="my-3" />
                 <p className="text-xs font-medium text-muted-foreground px-1">Custom type blocks</p>
-                {blockTypes.map((type) => (
-                  <button
-                    key={type.type_id}
-                    draggable
-                    onDragStart={(e) => e.dataTransfer.setData("builder-tool-type", `TYPE:${type.type_id}`)}
-                    className="w-full rounded-lg border bg-background p-3 text-left hover:bg-muted/40 transition-colors cursor-grab"
-                  >
-                    <div className="flex items-center gap-2 text-sm font-medium">
-                      <Puzzle className="h-4 w-4" />
-                      {type.type_name}
-                    </div>
-                  </button>
-                ))}
+                {blockTypes.map((type) => {
+                  const color = dynamicToolColorMap[type.type_id] ?? DYNAMIC_TOOL_COLORS[0];
+                  return (
+                    <button
+                      key={type.type_id}
+                      draggable
+                      onDragStart={(e) => e.dataTransfer.setData("builder-tool-type", `TYPE:${type.type_id}`)}
+                      className={`w-full rounded-lg border p-3 text-left transition-colors cursor-grab ${color.container}`}
+                    >
+                      <div className="flex items-center gap-2 text-sm font-medium">
+                        <span className={`inline-flex h-6 w-6 items-center justify-center rounded-md ${color.iconWrap}`}>
+                          <Puzzle className="h-4 w-4" />
+                        </span>
+                        {type.type_name}
+                      </div>
+                    </button>
+                  );
+                })}
               </>
             )}
 
@@ -334,10 +400,12 @@ const ChatbotBuilder = () => {
             <button
               draggable
               onDragStart={(e) => e.dataTransfer.setData("builder-tool-type", "TAGS")}
-              className="w-full rounded-lg border bg-muted/40 p-3 text-left hover:bg-muted transition-colors cursor-grab"
+              className={`w-full rounded-lg border p-3 text-left transition-colors cursor-grab ${TOOL_COLORS.TAGS.container}`}
             >
               <div className="flex items-center gap-2 text-sm font-medium">
-                <TagIcon className="h-4 w-4" />
+                <span className={`inline-flex h-6 w-6 items-center justify-center rounded-md ${TOOL_COLORS.TAGS.iconWrap}`}>
+                  <TagIcon className="h-4 w-4" />
+                </span>
                 Manage Tag
               </div>
             </button>
