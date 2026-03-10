@@ -345,7 +345,7 @@ const ChatbotBuilder = () => {
         </Card>
 
         <div
-          className="flex-1 h-full rounded-xl border border-dashed bg-white p-4 lg:p-5"
+          className="flex-1 h-full overflow-hidden rounded-xl border border-dashed bg-white p-4 lg:p-5"
           onDrop={onDrop}
           onDragOver={(e) => e.preventDefault()}
           style={{
@@ -354,40 +354,44 @@ const ChatbotBuilder = () => {
           }}
         >
 
-          {mode.type === "CONTACT" && (
-            <ContactForm
-              data={contact ?? EMPTY_CONTACT}
-              onSave={saveContact}
-              onCancel={() => setMode({ type: "NONE" })}
-              saving={saving}
-            />
-          )}
+          {mode.type !== "NONE" && (
+            <div className="mx-auto mt-3 mb-4 h-[calc(100%-1.75rem)] w-full max-w-3xl overflow-y-auto pr-1">
+              {mode.type === "CONTACT" && (
+                <ContactForm
+                  data={contact ?? EMPTY_CONTACT}
+                  onSave={saveContact}
+                  onCancel={() => setMode({ type: "NONE" })}
+                  saving={saving}
+                />
+              )}
 
-          {mode.type === "SCHEDULE" && (
-            <ScheduleForm data={mode.data} onSave={saveSchedule} onCancel={() => setMode({ type: "NONE" })} saving={saving} />
-          )}
+              {mode.type === "SCHEDULE" && (
+                <ScheduleForm data={mode.data} onSave={saveSchedule} onCancel={() => setMode({ type: "NONE" })} saving={saving} />
+              )}
 
-          {mode.type === "BLOCK_TYPE" && (
-            <BlockTypeForm data={mode.data} onSave={saveBlockType} onCancel={() => setMode({ type: "NONE" })} saving={saving} />
-          )}
+              {mode.type === "BLOCK_TYPE" && (
+                <BlockTypeForm data={mode.data} onSave={saveBlockType} onCancel={() => setMode({ type: "NONE" })} saving={saving} />
+              )}
 
-          {mode.type === "INSTANCE" && (
-            <DynamicInstanceForm
-              blockType={mode.blockType}
-              data={mode.data}
-              onSave={(payload) => saveInstance(mode.blockType, payload)}
-              onEditDefinition={() => editType(mode.blockType.type_id)}
-              onCancel={() => setMode({ type: "NONE" })}
-              saving={saving}
-            />
-          )}
+              {mode.type === "INSTANCE" && (
+                <DynamicInstanceForm
+                  blockType={mode.blockType}
+                  data={mode.data}
+                  onSave={(payload) => saveInstance(mode.blockType, payload)}
+                  onEditDefinition={() => editType(mode.blockType.type_id)}
+                  onCancel={() => setMode({ type: "NONE" })}
+                  saving={saving}
+                />
+              )}
 
-          {mode.type === "TAGS" && token && (
-            <TagsForm
-              chatbotId={chatbotId}
-              token={token}
-              onCancel={() => setMode({ type: "NONE" })}
-            />
+              {mode.type === "TAGS" && token && (
+                <TagsForm
+                  chatbotId={chatbotId}
+                  token={token}
+                  onCancel={() => setMode({ type: "NONE" })}
+                />
+              )}
+            </div>
           )}
         </div>
       </div>
