@@ -11,7 +11,7 @@ import {
   createReactWidgetMount,
   type MountedReactWidget,
 } from "./mountReactWidget";
-import { injectWidgetStyles } from "./styles";
+import { injectWidgetStyles } from "./injectStyles";
 
 const MOUNT_CONTAINER_ATTRIBUTE = "data-chatbot-widget-root";
 

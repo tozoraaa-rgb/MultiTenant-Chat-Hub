@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { WebComponentWidgetEventHandlers } from "../src/mountReactWidget";
+import { CHATBOT_WIDGET_STYLE_MARKER } from "../src/widgetStyles";
 
 const renderSpy = vi.fn();
 const unmountSpy = vi.fn();
@@ -37,7 +38,7 @@ describe("ChatbotWidgetElement", () => {
     expect(customElements.get(CHATBOT_WIDGET_TAG_NAME)).toBeDefined();
   });
 
-  it("creates shadow root and mount container on connect", () => {
+  it("creates shadow root, style layer, and mount container on connect", () => {
     const element = document.createElement(CHATBOT_WIDGET_TAG_NAME);
     element.setAttribute("data-domain", "shop.example.com");
     element.setAttribute("data-api-base-url", "https://api.example.com");
@@ -48,10 +49,31 @@ describe("ChatbotWidgetElement", () => {
     expect(
       element.shadowRoot?.querySelector("[data-chatbot-widget-root]"),
     ).toBeTruthy();
+    expect(
+      element.shadowRoot?.querySelector(
+        `style[${CHATBOT_WIDGET_STYLE_MARKER}="true"]`,
+      ),
+    ).toBeTruthy();
     expect(renderSpy).toHaveBeenCalledTimes(1);
   });
 
-  it("rerenders when observed attribute changes", () => {
+  it("injects styles only once across reconnects", () => {
+    const element = document.createElement(CHATBOT_WIDGET_TAG_NAME);
+    element.setAttribute("data-domain", "shop.example.com");
+    element.setAttribute("data-api-base-url", "https://api.example.com");
+
+    document.body.appendChild(element);
+    element.remove();
+    document.body.appendChild(element);
+
+    const styleNodes = element.shadowRoot?.querySelectorAll(
+      `style[${CHATBOT_WIDGET_STYLE_MARKER}="true"]`,
+    );
+
+    expect(styleNodes?.length).toBe(1);
+  });
+
+  it("rerenders when observed attribute changes without duplicating styles", () => {
     const element = document.createElement(CHATBOT_WIDGET_TAG_NAME);
     element.setAttribute("data-domain", "shop.example.com");
     element.setAttribute("data-api-base-url", "https://api.example.com");
@@ -60,6 +82,12 @@ describe("ChatbotWidgetElement", () => {
     element.setAttribute("data-title", "New title");
 
     expect(renderSpy).toHaveBeenCalledTimes(2);
+
+    const styleNodes = element.shadowRoot?.querySelectorAll(
+      `style[${CHATBOT_WIDGET_STYLE_MARKER}="true"]`,
+    );
+
+    expect(styleNodes?.length).toBe(1);
   });
 
   it("dispatches composed+bubbling custom events for open/close/message", () => {
