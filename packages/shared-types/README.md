@@ -1,3 +1,18 @@
 # @mth/shared-types
 
-Scaffold package for future shared contracts such as `PublicChatRequest`, `PublicChatResponse`, `SourceItem`, `WidgetConfig`, and `ChatMessage`.
+`@mth/shared-types` is the source of truth for public runtime contracts shared between the backend public chat API and widget packages.
+
+## Why this package exists
+
+This package prevents contract drift between independently shipped backend and widget deliverables.
+
+## Main exports
+
+- `ChatMessage`
+- `SourceItem`
+- `PublicChatRequest`
+- `PublicChatResponse` (runtime `data` payload for successful public chat responses)
+- `WidgetConfig`
+- `WidgetRuntimeErrorCode`
+
+- `PUBLIC_CHAT_RUNTIME_API_VERSION` (currently `v1`)
