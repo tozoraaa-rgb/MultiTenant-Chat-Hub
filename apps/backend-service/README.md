@@ -56,6 +56,33 @@ npm run test --workspace @mth/backend-service
 - `POST /api/v1/public/chat` is treated as the stable **API v1** runtime contract.
 - Future breaking runtime changes must be introduced under a new path version (for example `/api/v2/public/chat`).
 
+## Public runtime security model (v1)
+
+- `domain` is **resolution-only** (chatbot lookup), not proof of caller identity.
+- Backend verifies HTTP `Origin` against chatbot-specific allowed origins.
+- Optional `widgetKey` is a **public identifier** for diagnostics/rotation, not a secret.
+- Public security error codes include:
+  - `ORIGIN_NOT_ALLOWED` (403)
+  - `INVALID_WIDGET_KEY` (400)
+
+### Missing Origin policy
+
+- Browser widget requests are expected to include `Origin`.
+- In production, missing `Origin` is rejected.
+- Non-production bypass is available only when explicitly enabled via `PUBLIC_RUNTIME_ALLOW_MISSING_ORIGIN=true`.
+
+## CORS and CSP integration notes
+
+- CORS is a browser policy layer and does not replace backend authorization checks.
+- Production CORS allowlist can be configured with `CORS_ALLOWED_ORIGINS`.
+- Runtime authorization remains chatbot-level `Origin` allowlist verification.
+
+Host sites embedding the widget should allow:
+
+- `script-src`: widget bundle origin (your CDN/hosting)
+- `connect-src`: backend API origin (this service)
+- `style-src`: allow widget style injection path used by the web component wrapper
+
 ## Operational endpoints
 
 - Health check: `GET /health`
