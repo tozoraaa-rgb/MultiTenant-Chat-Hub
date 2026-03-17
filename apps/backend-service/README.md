@@ -74,10 +74,15 @@ Available URLs:
 Container bootstrap behavior used for local reproducibility:
 
 - `DB_AUTO_SYNC=true`: auto-creates/updates tables from Sequelize models at startup.
-- `DB_AUTO_SEED=true`: runs idempotent bootstrap seed data (`ADMIN/USER` roles, admin user, system tags).
+- `DB_AUTO_SEED=true`: runs idempotent bootstrap seed data (`ADMIN/USER` roles, admin user, system tags, demo chatbot, and demo allowed origins).
 - `DB_CONNECT_RETRY_ATTEMPTS` + `DB_CONNECT_RETRY_DELAY_MS`: backend retries DB connection while MySQL is becoming ready.
 
 If you need real LLM answers in local compose, export `GEMINI_API_KEY` before running compose.
+
+Demo seed values used by integration hosts:
+
+- demo chatbot domain: `shop.example.com` (configurable by `SEED_DEMO_CHATBOT_DOMAIN`)
+- allowed origins seeded for local demos: `http://localhost:5173`, `http://localhost:8080`
 
 ## Public runtime contract version
 
