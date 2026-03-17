@@ -27,6 +27,35 @@ npm install
 npm run dev --workspace @mth/backend-service
 ```
 
+## Docker local stack (Feature 9)
+
+Run the full backend demo stack (backend + MySQL):
+
+```bash
+docker compose up --build
+```
+
+or via npm helper scripts:
+
+```bash
+npm run docker:up
+npm run docker:logs
+npm run docker:down
+```
+
+What comes online:
+
+- Backend base URL: `http://localhost:4000`
+- Health endpoint: `http://localhost:4000/health`
+- OpenAPI docs page: `http://localhost:4000/api-docs`
+- OpenAPI JSON: `http://localhost:4000/api-docs.json`
+
+Notes:
+
+- Compose automatically boots MySQL and wires backend `DB_HOST=mysql`.
+- Compose enables `DB_AUTO_SYNC=true` and `DB_AUTO_SEED=true` so schema/bootstrap seed data are applied automatically for local testing.
+- If you want real LLM responses, provide `GEMINI_API_KEY` in your shell before running compose.
+
 ## Monorepo commands
 
 ```bash

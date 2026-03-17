@@ -51,6 +51,34 @@ npm run lint --workspace @mth/backend-service
 npm run test --workspace @mth/backend-service
 ```
 
+## Docker local stack (backend + mysql)
+
+From repo root:
+
+```bash
+docker compose up --build
+```
+
+Stack services:
+
+- `mysql` (MySQL 8, persistent volume)
+- `backend` (this package, built from `apps/backend-service/Dockerfile`)
+
+Available URLs:
+
+- Backend: `http://localhost:4000`
+- Health: `http://localhost:4000/health`
+- OpenAPI docs: `http://localhost:4000/api-docs`
+- OpenAPI JSON: `http://localhost:4000/api-docs.json`
+
+Container bootstrap behavior used for local reproducibility:
+
+- `DB_AUTO_SYNC=true`: auto-creates/updates tables from Sequelize models at startup.
+- `DB_AUTO_SEED=true`: runs idempotent bootstrap seed data (`ADMIN/USER` roles, admin user, system tags).
+- `DB_CONNECT_RETRY_ATTEMPTS` + `DB_CONNECT_RETRY_DELAY_MS`: backend retries DB connection while MySQL is becoming ready.
+
+If you need real LLM answers in local compose, export `GEMINI_API_KEY` before running compose.
+
 ## Public runtime contract version
 
 - `POST /api/v1/public/chat` is treated as the stable **API v1** runtime contract.
