@@ -22,8 +22,9 @@ This single HTTP service includes the existing backend domains:
 
 ## Environment setup
 
-1. Copy `.env.example` to `.env` inside `apps/backend-service`.
-2. Fill in real values for database credentials, `JWT_SECRET`, and `GEMINI_API_KEY`.
+1. If you do not already have a local `.env`, copy `.env.example` to `.env` inside `apps/backend-service`.
+2. If you already have a `.env` with real credentials, **do not overwrite it**. Update only missing keys by comparing with `.env.example`.
+3. Fill in real values for database credentials, `JWT_SECRET`, and `GEMINI_API_KEY`.
 
 ## Install dependencies (from repo root)
 

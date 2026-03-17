@@ -23,8 +23,15 @@ npm install
 npm run dev --workspace @mth/demo-react-host
 ```
 
-Optional env setup:
+Optional env setup (only if you want custom values):
 
+- Linux/macOS:
 ```bash
 cp apps/demo-react-host/.env.example apps/demo-react-host/.env
 ```
+- Windows PowerShell:
+```powershell
+Copy-Item apps/demo-react-host/.env.example apps/demo-react-host/.env
+```
+
+If you skip this step, defaults are already defined in the demo source.

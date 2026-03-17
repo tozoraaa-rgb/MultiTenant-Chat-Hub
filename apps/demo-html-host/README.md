@@ -24,3 +24,6 @@ npm run dev --workspace @mth/demo-html-host
 ```
 
 This command builds `packages/widget-web-component` browser bundle and serves `public/index.html` on port `8080`.
+
+
+If you previously saw a Windows error with `cp`/`mkdir`, this demo now uses a Node-based copy script and is cross-platform.

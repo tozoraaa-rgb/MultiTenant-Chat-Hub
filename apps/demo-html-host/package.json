@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build:widget": "npm run build:browser --workspace @mth/widget-web-component && mkdir -p public/vendor && cp ../../packages/widget-web-component/dist/chatbot-widget.browser.js public/vendor/chatbot-widget.browser.js",
+    "build:widget": "npm run build:browser --workspace @mth/widget-web-component && node ./scripts/build-widget-bundle.mjs",
     "dev": "npm run build:widget && npx serve public -l 8080",
     "build": "npm run build:widget",
     "lint": "echo 'demo-html-host lint not configured'",
