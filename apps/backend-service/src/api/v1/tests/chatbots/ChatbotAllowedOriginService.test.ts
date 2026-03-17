@@ -84,6 +84,13 @@ describe('ChatbotAllowedOriginService', () => {
     );
   });
 
+
+  it('accepts wildcard origin values in validation layer', async () => {
+    const { normalizeOrigin } = await import('../../validations/allowedOriginValidation');
+
+    expect(normalizeOrigin('*')).toBe('*');
+  });
+
   it('rejects malformed origin values in validation layer', async () => {
     const { normalizeOrigin } = await import('../../validations/allowedOriginValidation');
 

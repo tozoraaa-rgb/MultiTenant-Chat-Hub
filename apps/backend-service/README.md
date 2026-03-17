@@ -70,11 +70,13 @@ npm run test --workspace @mth/backend-service
 - Browser widget requests are expected to include `Origin`.
 - In production, missing `Origin` is rejected.
 - Non-production bypass is available only when explicitly enabled via `PUBLIC_RUNTIME_ALLOW_MISSING_ORIGIN=true`.
+- Per-chatbot allowlist accepts `*` as a wildcard origin for quick testing (not recommended for production).
 
 ## CORS and CSP integration notes
 
 - CORS is a browser policy layer and does not replace backend authorization checks.
 - Production CORS allowlist can be configured with `CORS_ALLOWED_ORIGINS`.
+- Setting `CORS_ALLOWED_ORIGINS=*` allows all browser origins (quick testing only; not recommended for production).
 - Runtime authorization remains chatbot-level `Origin` allowlist verification.
 
 Host sites embedding the widget should allow:

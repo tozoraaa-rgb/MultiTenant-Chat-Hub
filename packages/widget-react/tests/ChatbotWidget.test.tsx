@@ -156,6 +156,30 @@ describe("ChatbotWidget", () => {
     ).toBeInTheDocument();
   });
 
+
+  it("shows origin-specific error message when origin is not allowed", async () => {
+    sendMessageMock.mockRejectedValueOnce(
+      new WidgetRuntimeError("ORIGIN_NOT_ALLOWED", "origin blocked"),
+    );
+
+    render(
+      <ChatbotWidget
+        domain="shop.example.com"
+        apiBaseUrl="https://api.example.com"
+        openByDefault
+      />,
+    );
+
+    fireEvent.change(screen.getByLabelText("Message"), {
+      target: { value: "Hi there" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Send" }));
+
+    expect(
+      await screen.findByText("This website is not allowed to use this chatbot yet."),
+    ).toBeInTheDocument();
+  });
+
   it("respects openByDefault and welcomeMessage", () => {
     render(
       <ChatbotWidget

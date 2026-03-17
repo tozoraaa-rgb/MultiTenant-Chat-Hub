@@ -56,6 +56,25 @@ describe('POST /api/v1/public/chat origin hardening', () => {
     expect(response.body.success).toBe(true);
   });
 
+
+  it('allows any origin when wildcard allowlist entry exists', async () => {
+    ChatbotModel.findOne = jest
+      .fn()
+      .mockResolvedValue({ chatbot_id: 88, display_name: 'Shop Bot' } as never);
+    ChatbotAllowedOriginModel.findAll = jest.fn().mockResolvedValue([{ origin: '*' }] as never);
+    TagService.classifyQuestion = jest.fn().mockResolvedValue(['CONTACT'] as never);
+    ChatRuntimeService.fetchKnowledgeItems = jest.fn().mockResolvedValue([] as never);
+    LLMService.askGemini = jest.fn().mockResolvedValue('ok');
+
+    const response = await request(app)
+      .post('/api/v1/public/chat')
+      .set('Origin', 'https://preview.any-domain.example')
+      .send({ domain: 'shop.example.com', message: 'hello' });
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+  });
+
   it('rejects disallowed origin with ORIGIN_NOT_ALLOWED', async () => {
     ChatbotModel.findOne = jest
       .fn()

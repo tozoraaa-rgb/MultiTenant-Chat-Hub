@@ -29,6 +29,10 @@ export function normalizeOrigin(value: unknown): string {
 
   const trimmed = value.trim();
 
+  if (trimmed === '*') {
+    return '*';
+  }
+
   let parsed: URL;
   try {
     parsed = new URL(trimmed);

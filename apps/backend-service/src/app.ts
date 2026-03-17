@@ -34,6 +34,11 @@ const createCorsOriginDelegate = (): cors.CorsOptions['origin'] => {
       return;
     }
 
+    if (configuredOrigins.includes("*")) {
+      callback(null, true);
+      return;
+    }
+
     callback(null, configuredOrigins.includes(requestOrigin.toLowerCase()));
   };
 };

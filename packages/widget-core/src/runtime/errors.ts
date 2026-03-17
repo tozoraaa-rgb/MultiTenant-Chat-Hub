@@ -40,6 +40,8 @@ const BACKEND_ERROR_CODE_MAP: Partial<
   CHATBOT_NOT_FOUND: "CHATBOT_NOT_FOUND",
   LLM_UNAVAILABLE: "LLM_UNAVAILABLE",
   RATE_LIMIT_EXCEEDED: "RATE_LIMITED",
+  ORIGIN_NOT_ALLOWED: "ORIGIN_NOT_ALLOWED",
+  INVALID_WIDGET_KEY: "INVALID_WIDGET_KEY",
 };
 
 export const mapBackendErrorCodeToWidgetCode = (
@@ -60,6 +62,10 @@ export const mapHttpStatusToWidgetCode = (
 ): WidgetRuntimeErrorCode => {
   if (status === 429) {
     return "RATE_LIMITED";
+  }
+
+  if (status === 403) {
+    return "ORIGIN_NOT_ALLOWED";
   }
 
   return "UNKNOWN_ERROR";

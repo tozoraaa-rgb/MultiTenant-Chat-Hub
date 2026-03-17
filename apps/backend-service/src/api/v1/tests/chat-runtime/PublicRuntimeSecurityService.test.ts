@@ -20,6 +20,15 @@ describe('PublicRuntimeSecurityService', () => {
     ).resolves.toBeUndefined();
   });
 
+
+  it('allows wildcard origin entry', async () => {
+    ChatbotAllowedOriginModel.findAll = jest.fn().mockResolvedValue([{ origin: '*' }] as never);
+
+    await expect(
+      PublicRuntimeSecurityService.assertOriginAllowed(11, 'https://anywhere.example.com'),
+    ).resolves.toBeUndefined();
+  });
+
   it('rejects disallowed origin with ORIGIN_NOT_ALLOWED', async () => {
     ChatbotAllowedOriginModel.findAll = jest
       .fn()

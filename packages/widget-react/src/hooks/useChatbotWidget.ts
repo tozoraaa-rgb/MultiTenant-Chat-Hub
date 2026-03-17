@@ -11,6 +11,8 @@ const ERROR_MESSAGES: Record<WidgetRuntimeErrorCode, string> = {
   RATE_LIMITED: "Too many requests. Please wait a moment.",
   CHATBOT_NOT_FOUND: "This chatbot is not available.",
   LLM_UNAVAILABLE: "The response service is temporarily unavailable.",
+  ORIGIN_NOT_ALLOWED: "This website is not allowed to use this chatbot yet.",
+  INVALID_WIDGET_KEY: "This widget configuration is invalid. Please contact support.",
   UNKNOWN_ERROR: "Something went wrong.",
 };
 

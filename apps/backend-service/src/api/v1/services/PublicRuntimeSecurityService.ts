@@ -30,7 +30,7 @@ export class PublicRuntimeSecurityService {
       }
 
       throw new AppError(
-        'Origin header is required for public widget runtime requests.',
+        'Origin header is required for public widget runtime requests. For local testing, set PUBLIC_RUNTIME_ALLOW_MISSING_ORIGIN=true in non-production.',
         403,
         'ORIGIN_NOT_ALLOWED',
       );
@@ -42,9 +42,10 @@ export class PublicRuntimeSecurityService {
       where: { chatbot_id: chatbotId },
     });
 
-    const isAllowed = allowedOrigins.some(
-      (originRow) => originRow.origin.toLowerCase() === normalizedOrigin,
-    );
+    const isAllowed = allowedOrigins.some((originRow) => {
+      const allowedOrigin = originRow.origin.toLowerCase();
+      return allowedOrigin === "*" || allowedOrigin === normalizedOrigin;
+    });
 
     if (!isAllowed) {
       throw new AppError('Origin is not allowed for this chatbot.', 403, 'ORIGIN_NOT_ALLOWED', {

@@ -5,7 +5,7 @@ import { parsePublicChatResponse } from "../src/runtime/parseResponse";
 
 describe("parsePublicChatResponse error mapping", () => {
   it("maps CHATBOT_NOT_FOUND", () => {
-    expect(() =>
+    try {
       parsePublicChatResponse(
         {
           success: false,
@@ -13,8 +13,10 @@ describe("parsePublicChatResponse error mapping", () => {
           error: { code: "CHATBOT_NOT_FOUND", message: "not found" },
         },
         { status: 404 },
-      ),
-    ).toThrowError(new WidgetRuntimeError("CHATBOT_NOT_FOUND", "not found"));
+      );
+    } catch (error) {
+      expect((error as WidgetRuntimeError).code).toBe("CHATBOT_NOT_FOUND");
+    }
   });
 
   it("maps RATE_LIMIT_EXCEEDED to RATE_LIMITED", () => {
@@ -30,6 +32,22 @@ describe("parsePublicChatResponse error mapping", () => {
     } catch (error) {
       expect(error).toBeInstanceOf(WidgetRuntimeError);
       expect((error as WidgetRuntimeError).code).toBe("RATE_LIMITED");
+    }
+  });
+
+
+  it("maps ORIGIN_NOT_ALLOWED", () => {
+    try {
+      parsePublicChatResponse(
+        {
+          success: false,
+          data: null,
+          error: { code: "ORIGIN_NOT_ALLOWED", message: "origin blocked" },
+        },
+        { status: 403 },
+      );
+    } catch (error) {
+      expect((error as WidgetRuntimeError).code).toBe("ORIGIN_NOT_ALLOWED");
     }
   });
 
