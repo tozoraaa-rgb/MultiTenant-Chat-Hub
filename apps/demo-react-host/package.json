@@ -4,11 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --port 5173",
-    "build": "vite build",
+    "dev": "node ../../scripts/ensure-windows-optional-deps.mjs && npm run build:deps && vite --port 5173",
+    "build": "node ../../scripts/ensure-windows-optional-deps.mjs && npm run build:deps && vite build",
     "preview": "vite preview --port 5173",
     "lint": "echo 'demo-react-host lint not configured'",
-    "test": "echo 'demo-react-host test not configured'"
+    "test": "echo 'demo-react-host test not configured'",
+    "build:deps": "npm run build --workspace @mth/shared-types && npm run build --workspace @mth/widget-core && npm run build --workspace @mth/widget-react"
   },
   "dependencies": {
     "@mth/widget-react": "*",

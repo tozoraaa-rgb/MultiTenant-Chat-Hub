@@ -23,7 +23,13 @@ npm install
 npm run dev --workspace @mth/demo-html-host
 ```
 
-This command builds `packages/widget-web-component` browser bundle and serves `public/index.html` on port `8080`.
+This command builds the browser bundle and serves `public/index.html` on port `8080`.
 
+## Windows troubleshooting (esbuild optional dependency)
 
-If you previously saw a Windows error with `cp`/`mkdir`, this demo now uses a Node-based copy script and is cross-platform.
+If you still see `The package "@esbuild/win32-x64" could not be found`, run from repo root:
+
+```powershell
+npm i -D @esbuild/win32-x64 --no-save
+npm run dev --workspace @mth/demo-html-host
+```

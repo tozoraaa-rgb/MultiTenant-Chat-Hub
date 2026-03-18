@@ -58,6 +58,23 @@ npm run dev --workspace @mth/demo-html-host
 
 This builds a browser bundle from `@mth/widget-web-component` and serves a static page using `<chatbot-widget>`.
 
+
+### Windows quick fix for optional dependency issues
+
+If `vite`/`esbuild` report missing optional native packages, run:
+
+```powershell
+npm i -D @rollup/rollup-win32-x64-msvc @esbuild/win32-x64 --no-save
+```
+
+If you need to fully reinstall dependencies in PowerShell (correct syntax):
+
+```powershell
+Remove-Item -Recurse -Force node_modules
+Remove-Item -Force package-lock.json
+npm install
+```
+
 ## Optional helper scripts
 
 ```bash
