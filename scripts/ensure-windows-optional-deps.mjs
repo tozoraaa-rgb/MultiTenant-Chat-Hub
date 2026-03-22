@@ -1,8 +1,12 @@
 import { execSync } from 'node:child_process';
 import { createRequire } from 'node:module';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const isWindows = process.platform === 'win32';
 const require = createRequire(import.meta.url);
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(scriptDir, '..');
 
 if (!isWindows) {
   process.exit(0);
@@ -50,6 +54,7 @@ console.log(
 
 execSync(`npm i -D ${missingPackages.join(' ')} --no-save --no-package-lock`, {
   stdio: 'inherit',
+  cwd: repoRoot,
 });
 
 for (const pkg of missingPackages) {
