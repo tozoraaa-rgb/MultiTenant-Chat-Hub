@@ -29,12 +29,35 @@ const packages = [
   `@swc/core-win32-${archSuffix}-msvc`,
 ];
 
+const missingPackages = [];
+
 for (const pkg of packages) {
   try {
     require.resolve(pkg);
     console.log(`[ensure-windows-optional-deps] ${pkg} already installed.`);
   } catch {
-    console.log(`[ensure-windows-optional-deps] Installing missing ${pkg}...`);
-    execSync(`npm i -D ${pkg} --no-save`, { stdio: 'inherit' });
+    missingPackages.push(pkg);
+  }
+}
+
+if (missingPackages.length === 0) {
+  process.exit(0);
+}
+
+console.log(
+  `[ensure-windows-optional-deps] Installing missing packages in one pass: ${missingPackages.join(', ')}`,
+);
+
+execSync(`npm i -D ${missingPackages.join(' ')} --no-save --no-package-lock`, {
+  stdio: 'inherit',
+});
+
+for (const pkg of missingPackages) {
+  try {
+    require.resolve(pkg);
+  } catch {
+    throw new Error(
+      `[ensure-windows-optional-deps] Failed to install '${pkg}'. Please run: npm i -D ${missingPackages.join(' ')} --no-save`,
+    );
   }
 }

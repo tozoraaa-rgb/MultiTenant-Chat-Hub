@@ -43,6 +43,6 @@ If you skip this step, defaults are already defined in the demo source.
 If you still see `Cannot find module @rollup/rollup-win32-x64-msvc` or SWC native binding errors, run from repo root:
 
 ```powershell
-npm i -D @rollup/rollup-win32-x64-msvc @esbuild/win32-x64 @swc/core-win32-x64-msvc --no-save
+npm i -D @rollup/rollup-win32-x64-msvc @esbuild/win32-x64 @swc/core-win32-x64-msvc --no-save --no-package-lock
 npm run dev --workspace @mth/demo-react-host
 ```
