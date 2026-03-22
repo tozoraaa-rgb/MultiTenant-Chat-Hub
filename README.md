@@ -121,6 +121,8 @@ npm run clean
 
 ## Windows note
 
+After a fresh clone, `npm install` should already pull required Windows native optional dependencies from root `optionalDependencies`.
+
 If optional native dependencies fail to resolve on Windows, run:
 
 ```powershell

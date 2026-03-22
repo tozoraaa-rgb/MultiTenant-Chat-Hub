@@ -18,5 +18,10 @@
   },
   "devDependencies": {
     "turbo": "^2.5.6"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-win32-x64-msvc": "^4.52.5",
+    "@esbuild/win32-x64": "^0.25.12",
+    "@swc/core-win32-x64-msvc": "^1.15.3"
   }
 }
