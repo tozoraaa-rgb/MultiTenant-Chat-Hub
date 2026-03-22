@@ -124,7 +124,7 @@ npm run clean
 If optional native dependencies fail to resolve on Windows, run:
 
 ```powershell
-npm i -D @rollup/rollup-win32-x64-msvc @esbuild/win32-x64 --no-save
+npm i -D @rollup/rollup-win32-x64-msvc @esbuild/win32-x64 @swc/core-win32-x64-msvc --no-save
 ```
 
 If needed, reinstall dependencies with:
