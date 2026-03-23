@@ -1,81 +1,63 @@
-# MultiTenant Chat Hub Monorepo
+# MultiTenant Chat Hub
 
-This repository is now organized as a monorepo using **npm workspaces** and **Turborepo**.
+MultiTenant Chat Hub is a monorepo that contains:
 
-## Structure
+- A deployable backend API service.
+- An admin application.
+- Reusable chatbot widget packages (core runtime, React adapter, and Web Component wrapper).
+- Two demo host apps (React and plain HTML) to validate integrations quickly.
 
-- `apps/backend-service` - Express + TypeScript backend service (existing product backend).
-- `apps/admin-app` - React/TypeScript admin dashboard app.
-- `apps/demo-react-host` - React host integration target consuming `@mth/widget-react`.
-- `apps/demo-html-host` - plain HTML host integration target consuming browser bundle from `@mth/widget-web-component`.
-- `packages/shared-types` - source of truth for shared public runtime contracts (backend + widget packages).
-- `packages/widget-core` - UI-agnostic widget runtime package.
-- `packages/widget-react` - React widget package.
-- `packages/widget-web-component` - Web Component wrapper package.
-- `packages/eslint-config` - shared ESLint config package.
-- `packages/tsconfig-base` - shared TypeScript base config package.
+## Repository structure
 
-## Install dependencies
+```text
+apps/
+  backend-service      # API service (Express + TypeScript)
+  admin-app            # Admin dashboard
+  demo-react-host      # React integration demo
+  demo-html-host       # Plain HTML integration demo
+packages/
+  shared-types         # Shared backend/widget contracts
+  widget-core          # Runtime logic and policies
+  widget-react         # React widget package
+  widget-web-component # <chatbot-widget> package
+  eslint-config        # Shared ESLint config
+  tsconfig-base        # Shared TypeScript config
+scripts/
+  ensure-windows-optional-deps.mjs
+```
+
+## Prerequisites
+
+- Node.js 18+ (Node 20 LTS recommended)
+- npm 9+
+- Docker + Docker Compose (recommended for local backend stack)
+
+## Install
+
+From repository root:
 
 ```bash
 npm install
 ```
 
-## Docker local backend stack (Feature 9)
+## Run the full local stack (recommended)
 
-Run backend + MySQL:
+### Option A: Docker Compose (backend + DB + admin + demos)
 
 ```bash
 docker compose up --build
 ```
 
-Quick URLs:
+Useful endpoints:
 
 - Backend: `http://localhost:4000`
 - Health: `http://localhost:4000/health`
-- OpenAPI docs: `http://localhost:4000/api-docs`
+- API docs: `http://localhost:4000/api-docs`
+- Admin app: `http://localhost:4173`
+- React host demo: `http://localhost:5173`
+- HTML host demo: `http://localhost:8080`
 
-Compose startup bootstraps a demo chatbot domain `shop.example.com` and seeds allowed origins for host demos:
-
-- `http://localhost:5173` (React host demo)
-- `http://localhost:8080` (HTML host demo)
-
-## Integration target demos (Feature 10)
-
-### Demo A — React host (`apps/demo-react-host`)
-
-```bash
-npm run dev --workspace @mth/demo-react-host
-```
-
-This proves package-based React integration via `@mth/widget-react`.
-
-### Demo B — Plain HTML host (`apps/demo-html-host`)
-
-```bash
-npm run dev --workspace @mth/demo-html-host
-```
-
-This builds a browser bundle from `@mth/widget-web-component` and serves a static page using `<chatbot-widget>`.
-
-
-### Windows quick fix for optional dependency issues
-
-If `vite`/`esbuild` report missing optional native packages, run:
-
-```powershell
-npm i -D @rollup/rollup-win32-x64-msvc @esbuild/win32-x64 --no-save
-```
-
-If you need to fully reinstall dependencies in PowerShell (correct syntax):
-
-```powershell
-Remove-Item -Recurse -Force node_modules
-Remove-Item -Force package-lock.json
-npm install
-```
-
-## Optional helper scripts
+Optional helper scripts:
 
 ```bash
 npm run docker:up
@@ -83,13 +65,72 @@ npm run docker:logs
 npm run docker:down
 ```
 
+### Option B: Run backend locally (without Docker)
+
+1. Create env file:
+
+```bash
+cp apps/backend-service/.env.example apps/backend-service/.env
+```
+
+2. Make sure your local MySQL config matches `.env`.
+
+3. Start backend in dev mode:
+
+```bash
+npm run dev --workspace @mth/backend-service
+```
+
+## Run admin app and demos without Docker (optional)
+
+If you only want to run frontend hosts locally while keeping backend in Docker:
+
+### Admin app
+
+```bash
+npm run dev --workspace @mth/admin-app
+```
+
+### React host demo
+
+```bash
+npm run dev --workspace @mth/demo-react-host
+```
+
+Open: `http://localhost:5173`
+
+### HTML host demo
+
+```bash
+npm run dev --workspace @mth/demo-html-host
+```
+
+Open: `http://localhost:8080`
+
 ## Monorepo commands
+
+From root:
 
 ```bash
 npm run dev
 npm run build
 npm run lint
 npm run test
+npm run clean
 ```
 
-These commands are orchestrated with Turborepo across workspace packages/apps.
+## Windows note
+
+If optional native dependencies fail to resolve on Windows, run:
+
+```powershell
+npm i -D @rollup/rollup-win32-x64-msvc @esbuild/win32-x64 --no-save
+```
+
+If needed, reinstall dependencies with:
+
+```powershell
+Remove-Item -Recurse -Force node_modules
+Remove-Item -Force package-lock.json
+npm install
+```
